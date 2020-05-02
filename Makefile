@@ -1,16 +1,13 @@
-
-
-
-TARGETS= evil_rabbit.so demo.so innocent
+TARGETS= evil_rabbit.so ./demo/demo.so ./demo/innocent
 all: $(TARGETS)
 
 evil_rabbit.so: evil_rabbit.c
 	gcc -shared -fPIC $< -o $@ -ldl
 
-demo.so: demo.c
+./demo/demo.so: ./demo/demo.c
 	gcc -shared -fPIC $< -o $@ -ldl
 
-innocent: innocent.c
+./demo/innocent: ./demo/innocent.c
 	gcc $< -o $@
 
 clean:
