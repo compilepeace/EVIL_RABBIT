@@ -11,4 +11,4 @@ evil_rabbit.so: evil_rabbit.c
 	gcc $< -o $@
 
 clean:
-	rm $(TARGETS)
+	rm $(TARGETS) /tmp/.snow_valley

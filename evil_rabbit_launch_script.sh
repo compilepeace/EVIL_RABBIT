@@ -10,4 +10,4 @@ cp ./evil_rabbit.so /tmp/evil_rabbit.so
 echo /tmp/evil_rabbit.so > /etc/ld.so.preload
 
 # For "evil_rabbit.so" to trigger peace(), it should find the "snow_valley"
-echo "Eternity is a myth" > /tmp/snow_valley
+echo "Eternity is a myth" > /tmp/.snow_valley

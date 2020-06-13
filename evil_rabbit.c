@@ -33,7 +33,7 @@
 #define HIDE_FILE1  "ld.so.preload"
 #define HIDE_FILE2  "evil_rabbit"
 #define HIDE_DIR    "EVIL_RABBIT"
-#define SIGNATURE   "snow_valley"
+#define SIGNATURE   ".snow_valley"
 #define PORT        19999
 
 
