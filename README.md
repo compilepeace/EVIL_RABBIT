@@ -3,7 +3,10 @@ Evil Rabbit metaphorically is a member of snow valley hidden in the himalayan ra
 Following the analogy, evil rabbit is a **LD_PRELOAD** based **userland rootkit** developed as a mere POC for the demonstration and explanation of **SO injection** capabilities (analogous to *DLL injection* on Windows). Currently it does the following - 
 * Conceal itself and in general any file specified on the filesystem (including GNOME file manager - nautilus)
 * Posses a payload of **TCP bind shell** which is activated only if a /tmp directory contains a file named *.snow_valley* (i.e. /tmp/.snow_valley).
+<br>
+If you wish to build an understanding towards userland rootkits or the project itself, I've written an article for the same.<br> [Memory Malware Part 0x2 — Crafting LD_PRELOAD Rootkits in Userland] <br>
 
+<br>
 **NOTE**: Try *not* to run it on a system close to your heart. Keep it unmodified and it probably won't put your system to an unstable state, still it is strongly suggested to run it in a virtual machine (since it not tested on all variants of Linux).
 
 ## Usage !
@@ -32,3 +35,5 @@ Cheers x_x
 
 **NAME**  : Abhinav Thakur <br>
 **EMAIL** : compilepeace@gmail.com  
+
+[Memory Malware Part 0x2 — Crafting LD_PRELOAD Rootkits in Userland]: https://medium.com/@compilepeace/memory-malware-part-0x2-writing-userland-rootkits-via-ld-preload-30121c8343d5
