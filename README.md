@@ -5,10 +5,8 @@ Following the analogy, evil rabbit is a **LD_PRELOAD** based **userland rootkit*
 * Posses a payload of **TCP bind shell** which is activated only if a /tmp directory contains a file named *.snow_valley* (i.e. /tmp/.snow_valley).
 <br>
 
+**NOTE** - If you wish to build an understanding towards userland rootkits or the project itself, I've written an article for the same.<br> **[Memory Malware Part 0x2 — Crafting LD_PRELOAD Rootkits in Userland]** <br>
 
-If you wish to build an understanding towards userland rootkits or the project itself, I've written an article for the same.<br> [Memory Malware Part 0x2 — Crafting LD_PRELOAD Rootkits in Userland] <br>
-
-**NOTE**: Try *not* to run it on a system close to your heart. Keep it unmodified and it probably won't put your system to an unstable state, still it is strongly suggested to run it in a virtual machine (since it not tested on all variants of Linux).
 
 ## Usage !
 To check it out, follow the below steps on your Linux machine. 
@@ -27,6 +25,8 @@ To check it out, follow the below steps on your Linux machine.
 
 * Notice that the files whose names start with "evil_rabbit" are not printed out to STDOUT and the system starts listening on the port 19999 as soon as we enter the command 'ls' after infection. Using netcat, I connected from my host OS at **192.168.58.1** to the infected VM (Ubuntu 20.04) running at IP address **192.168.58.205** that provides a **TCP bind shell** to anyone who connects.
 ![magic](./images/4_magic.png)
+
+**NOTE**: Try *not* to run it on a system close to your heart. Keep it unmodified and it probably won't put your system to an unstable state, still it is strongly suggested to run it in a virtual machine (since it not tested on all variants of Linux).
 
 **DISCLAIMER** — It was build to only be used for educational purposes. Don’t risk yourself by using it for malicious purposes, it might attract hell. Try to keep the world a safe place ×_×
 
